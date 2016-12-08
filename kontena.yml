@@ -1,11 +1,11 @@
 stack: jussir/loki
 description: |
   Lokkaushomma
-version: '2'
+version: '2.3'
 services:
   elasticsearch:
     affinity:
-      - node==restless-haze-25
+      - label==loki-kone
     image: image-registry.leonidasoy.fi/loki-elasticsearch:latest
     ports: []
     volumes: []

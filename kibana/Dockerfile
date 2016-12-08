@@ -1,1 +1,2 @@
 FROM kibana:5
+EXPOSE 5601
