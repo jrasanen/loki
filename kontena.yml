@@ -1,7 +1,7 @@
 stack: jussir/loki
 description: |
   Lokkaushomma
-version: '2.3'
+version: '2.3.1'
 services:
   elasticsearch:
     affinity:
@@ -45,3 +45,6 @@ services:
       - name: KONTENA_LB_BASIC_AUTH_SECRETS
         secret: BASIC_AUTH_FOR_KIBANA1
         type: env
+    depends_on:
+      - fluentd
+      - elasticsearch
