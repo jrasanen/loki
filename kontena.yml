@@ -1,0 +1,47 @@
+stack: jussir/loki
+description: |
+  Lokkaushomma
+version: '2'
+services:
+  elasticsearch:
+    affinity:
+      - node==restless-haze-25
+    image: image-registry.leonidasoy.fi/loki-elasticsearch:latest
+    ports: []
+    volumes: []
+    stateful: true
+    extends:
+      file: docker-compose.yml
+      service: elasticsearch
+
+  fluentd:
+    image: image-registry.leonidasoy.fi/loki-fluentd:latest
+    ports: []
+    volumes: []
+    extends:
+      file: docker-compose.yml
+      service: fluentd
+    external_links:
+      - platform/lb1
+    environment:
+      - KONTENA_LB_MODE=tcp
+
+  kibana:
+    image: image-registry.leonidasoy.fi/loki-kibana:latest
+    ports: []
+    volumes: []
+    extends:
+      file: docker-compose.yml
+      service: kibana
+    environment:
+      - KONTENA_LB_MODE=http
+      - KONTENA_LB_BALANCE=roundrobin
+      - KONTENA_LB_INTERNAL_PORT=5601
+      - KONTENA_LB_VIRTUAL_HOSTS=loki.leonidasoy.fi
+      - "KONTENA_LB_CUSTOM_SETTINGS=redirect scheme https if !{ ssl_fc }"
+    external_links:
+      - platform/lb1
+    secrets:
+      - name: KONTENA_LB_BASIC_AUTH_SECRETS
+        secret: BASIC_AUTH_FOR_KIBANA1
+        type: env

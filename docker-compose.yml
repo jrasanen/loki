@@ -8,8 +8,6 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
-    networks:
-      - loki
 
   fluentd:
     build: fluentd/
@@ -23,8 +21,6 @@ services:
       - ./fluentd/:/fluentd/etc/
     depends_on:
       - elasticsearch
-    networks:
-      - loki
 
   kibana:
     build: kibana/
@@ -32,11 +28,5 @@ services:
       - ./kibana/config/:/opt/kibana/config/
     ports:
       - "5601:5601"
-    networks:
-      - loki
     depends_on:
       - elasticsearch
-
-networks:
-  loki:
-    driver: bridge
