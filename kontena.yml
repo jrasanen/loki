@@ -1,7 +1,7 @@
 stack: jussir/loki
 description: |
   Lokkaushomma
-version: '2.3.1'
+version: '2.5'
 services:
   elasticsearch:
     affinity:
@@ -25,6 +25,8 @@ services:
       - platform/lb1
     environment:
       - KONTENA_LB_MODE=tcp
+    depends_on:
+      - elasticsearch
 
   kibana:
     image: image-registry.leonidasoy.fi/loki-kibana:latest
@@ -46,5 +48,4 @@ services:
         secret: BASIC_AUTH_FOR_KIBANA1
         type: env
     depends_on:
-      - fluentd
       - elasticsearch
