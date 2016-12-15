@@ -6,7 +6,7 @@ services:
   elasticsearch:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-elasticsearch:latest
+    image: image-registry.leonidasoy.fi/loki-elasticsearch:v3
     ports: []
     volumes: []
     stateful: true
@@ -15,13 +15,15 @@ services:
       service: elasticsearch
 
   fluentd:
-    image: image-registry.leonidasoy.fi/loki-fluentd:latest
+    affinity:
+      - label==loki-kone
+    image: image-registry.leonidasoy.fi/loki-fluentd:v3
     ports: []
     volumes: []
     extends:
       file: docker-compose.yml
       service: fluentd
-    external_links:
+    links:
       - platform/lb1
     environment:
       - KONTENA_LB_MODE=tcp
@@ -29,7 +31,9 @@ services:
       - elasticsearch
 
   kibana:
-    image: image-registry.leonidasoy.fi/loki-kibana:latest
+    affinity:
+      - label==loki-kone
+    image: image-registry.leonidasoy.fi/loki-kibana:v3
     ports: []
     volumes: []
     extends:
@@ -41,7 +45,7 @@ services:
       - KONTENA_LB_INTERNAL_PORT=5601
       - KONTENA_LB_VIRTUAL_HOSTS=loki.leonidasoy.fi
       - "KONTENA_LB_CUSTOM_SETTINGS=redirect scheme https if !{ ssl_fc }"
-    external_links:
+    links:
       - platform/lb1
     secrets:
       - name: KONTENA_LB_BASIC_AUTH_SECRETS
