@@ -15,10 +15,9 @@ services:
       - "9292:9292"
       - "9880:9880"
       - "24224:24224"
+      - "24224:24224/udp"
       - "24284:24284"
       - "5170:5170"
-    volumes:
-      - ./fluentd/:/fluentd/etc/
     depends_on:
       - elasticsearch
 

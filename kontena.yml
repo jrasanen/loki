@@ -6,10 +6,14 @@ services:
   elasticsearch:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-elasticsearch:v3
+    image: image-registry.leonidasoy.fi/loki-elasticsearch:v4
     ports: []
     volumes: []
     stateful: true
+    environment:
+      - KONTENA_LB_MODE=tcp
+      - KONTENA_LB_EXTERNAL_PORT=9200
+      - KONTENA_LB_INTERNAL_PORT=9200
     extends:
       file: docker-compose.yml
       service: elasticsearch
@@ -17,23 +21,21 @@ services:
   fluentd:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-fluentd:v3
-    ports: []
+    image: image-registry.leonidasoy.fi/loki-fluentd:v4
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
     volumes: []
     extends:
       file: docker-compose.yml
       service: fluentd
-    links:
-      - platform/lb1
-    environment:
-      - KONTENA_LB_MODE=tcp
     depends_on:
       - elasticsearch
 
   kibana:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-kibana:v3
+    image: image-registry.leonidasoy.fi/loki-kibana:v4
     ports: []
     volumes: []
     extends:
