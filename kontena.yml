@@ -42,12 +42,13 @@ services:
       file: docker-compose.yml
       service: kibana
     environment:
-      - KONTENA_LB_MODE=http
-      - KONTENA_LB_BALANCE=roundrobin
-      - KONTENA_LB_INTERNAL_PORT=5601
-      - KONTENA_LB_VIRTUAL_HOSTS=loki.leonidasoy.fi
-      - "KONTENA_LB_CUSTOM_SETTINGS=redirect scheme https if !{ ssl_fc }"
-      - "KONTENA_LB_CUSTOM_SETTINGS=http-response set-header Strict-Transport-Security \"max-age=16000000; includeSubDomains; preload;\""
+      KONTENA_LB_MODE: http
+      KONTENA_LB_BALANCE: roundrobin
+      KONTENA_LB_INTERNAL_PORT: 5601
+      KONTENA_LB_VIRTUAL_HOSTS: loki.leonidasoy.fi
+      KONTENA_LB_CUSTOM_SETTINGS: |
+        redirect scheme https if !{ ssl_fc }
+        http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
     links:
       - platform/lb1
     secrets:
