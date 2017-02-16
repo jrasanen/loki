@@ -48,7 +48,7 @@ services:
       KONTENA_LB_VIRTUAL_HOSTS: loki.leonidasoy.fi
       KONTENA_LB_CUSTOM_SETTINGS: |
         redirect scheme https if !{ ssl_fc }
-        http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
+        http-response set-header Strict-Transport-Security max-age=16000000;\ includeSubDomains;\ preload;
     links:
       - platform/lb1
     secrets:
