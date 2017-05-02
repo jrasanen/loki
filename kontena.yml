@@ -6,41 +6,39 @@ services:
   elasticsearch:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-elasticsearch:v4
+    image: registry.plat2.leonidasoy.fi/loki-elasticsearch
     ports: []
-    volumes: []
     stateful: true
     environment:
       - KONTENA_LB_MODE=tcp
       - KONTENA_LB_EXTERNAL_PORT=9200
       - KONTENA_LB_INTERNAL_PORT=9200
-    extends:
-      file: docker-compose.yml
-      service: elasticsearch
+
+  elasticsearch-exporter:
+    affinity:
+      - label==loki-kone
+    image: registry.plat2.leonidasoy.fi/loki-elasticsearch-exporter
+    links:
+      - elasticsearch
+    command: bin/elasticsearch_exporter --es.uri=elasticsearch:8500
 
   fluentd:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-fluentd:v4
+    image: registry.plat2.leonidasoy.fi/loki-fluentd
     ports:
       - "24224:24224"
       - "24224:24224/udp"
     volumes: []
-    extends:
-      file: docker-compose.yml
-      service: fluentd
     depends_on:
       - elasticsearch
 
   kibana:
     affinity:
       - label==loki-kone
-    image: image-registry.leonidasoy.fi/loki-kibana:v4
+    image: registry.plat2.leonidasoy.fi/loki-kibana
     ports: []
     volumes: []
-    extends:
-      file: docker-compose.yml
-      service: kibana
     environment:
       KONTENA_LB_MODE: http
       KONTENA_LB_BALANCE: roundrobin
@@ -53,7 +51,7 @@ services:
       - platform/lb1
     secrets:
       - name: KONTENA_LB_BASIC_AUTH_SECRETS
-        secret: BASIC_AUTH_FOR_KIBANA1
+        secret: KIBANA_BASIC_AUTH
         type: env
     depends_on:
       - elasticsearch
