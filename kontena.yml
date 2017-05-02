@@ -20,7 +20,7 @@ services:
     image: registry.plat2.leonidasoy.fi/loki-elasticsearch-exporter
     links:
       - elasticsearch
-    command: bin/elasticsearch_exporter --es.uri=elasticsearch:8500
+    command: bin/elasticsearch_exporter --es.uri=http://elasticsearch:9200
 
   fluentd:
     affinity:
